@@ -1,0 +1,17 @@
+#autodelete,Is_image
+cascading dropboxes
+search bar
+edit pages of subcategories
+#review page=>buttons and redirection
+download button's count 
+star rating
+in review page give the logined user's review first
+public,private,permissions
+#developer and other to be taken
+#after writing review you should edit the review
+#next and previous button after 10 projects
+#drop down for categories in navigation bar
+drop down for subcategories in navigation bar
+#admin should add peoples as developers in menu itself
+add a button to view_project page to make the project public,private
+subcategories are not being listed in menu.py

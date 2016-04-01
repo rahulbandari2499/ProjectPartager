@@ -1,0 +1,117 @@
+{{extend 'layout.html'}}
+<style>
+body{
+	        background-image:url("{{=URL('static','images/')}}");
+		        background-size:100% 100%;
+			        background-repeat:none;
+				                        }
+</style>
+</br>
+<style type="text/css">
+h3 { display: inline; }
+</style>
+<div align="center" class="well"> <h2>Search Results</h2></div>
+{{count=0}}
+{{for some in form:}}
+{{if str(some.title).startswith(t):}}
+{{if count==0:}}
+<h1>In Projects:</h1>
+{{pass}}
+{{count=count+1}}
+<h3>{{=LI(A(some.title, _href=URL("view_project",args=some.id)))}}</h3>
+<br/>
+{{pass}}
+{{pass}}
+
+{{s=''}}
+{{count=0}}
+{{count=0}}
+{{for some in form1:}}
+{{if str(author(some.id)).startswith(t):}}
+{{if count==0:}}
+<h1>In Users:</h1>
+{{pass}}
+{{count=count+1}}
+<h3>
+{{=LI(A(author(some.id), _href=URL("view_projects_by_author",args=some.id)))}}</h3>
+{{pass}}
+{{pass}}
+
+{{count=0}}
+{{for some in form2:}}
+{{if str(some.name).startswith(t):}}
+{{if count==0:}}
+<h1>In Categories:</h1>
+{{pass}}
+{{count=count+1}}
+<h3>
+{{=LI(A(some.name, _href=URL("view_projects_by_categories",args=some.name)))}}</h3>
+{{pass}}
+{{pass}}
+
+{{count=0}}
+{{for some in form3:}}
+{{if str(some.title).startswith(t):}}
+{{if count==0:}}
+<h1>In SubCategories:</h1>
+{{pass}}
+{{count=count+1}}
+<h3>
+{{=LI(A(some.title, _href=URL("view_projects_by_sub_categories",args=some.title)))}}</h3>
+{{pass}}
+{{pass}}
+
+
+
+{{count=0}}
+{{for some in form:}}
+{{if str(some.files).startswith(t):}}
+{{if count==0:}}
+<h1>In Files:</h1>
+{{pass}}
+{{count=count+1}}
+<h3>
+	{{=LI(A(some.files, _href=URL("view_project",args=some.id)))}}</h3>
+{{pass}}
+{{pass}}
+</br>
+
+{{for some in form:}}
+{{s=some.body}}
+{{if s!=None:}}
+{{a=s.split()}}
+{{for i in range(len(a)):}}
+{{if str(a[i]).startswith(t):}}
+{{if count==0:}}
+<h1>In Description:</h1>
+{{pass}}
+{{count=count+1}}
+<h3>{{=LI(A(some.title, _href=URL("view_project",args=some.id)))}}</h3>
+Description:
+<h4>{{=some.body}}</h4>
+</br>
+</br>
+{{break}}
+{{pass}}
+{{pass}}
+{{pass}}
+{{pass}}
+</br>
+<!not works because of download and hash conversion>
+{{count=0}}
+{{for some in form:}}
+{{print some.files}}
+{{if str(some.files).startswith(t):}}
+{{if count==0:}}
+<h1>In Files:</h1>
+{{pass}}
+{{count=count+1}}
+<h3>
+	{{=LI(A(some.files, _href=URL("view_project",args=some.id)))}}</h3>
+<br/>
+{{pass}}
+{{pass}}
+</br>
+{{s=''}}
+{{count=0}}
+

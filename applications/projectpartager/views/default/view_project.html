@@ -1,0 +1,267 @@
+{{extend 'layout.html'}}
+<style>
+.rendering {
+	padding-left:5px;
+	border-bottom-style:solid;
+}
+.rendering1 {
+	padding-left:5px;
+}
+.column {
+	float:left;
+	padding-left:10pt;
+}
+.column1{
+	float:right;
+}
+.cate{
+	border-radius: 10px;
+	border: 2px solid #73AD21;
+	width: 230px;
+	height: 35px;
+	text-align:center;
+	color:white;
+	background-color:green;
+
+}
+.anu{
+	color:white;
+	text-decoration:none;
+}
+.anu:hover
+{
+	color:white;
+	text-decoration:none;
+}
+
+.clear {
+	clear: both;   
+}
+.edit-button{
+	margin:10px;
+}
+.rating,.screenshots,.description,.features
+{
+	padding-bottom:10px;
+	margin-bottom:10px;
+	border-bottom-style:solid;
+	border-bottom-width:2px;
+	border-bottom-color:green;
+}
+.case
+{
+	text-transform:capitalize;
+	color:green;
+}
+.des
+{
+	color:blue;
+}
+.colour{
+	color:red;
+}
+
+.capi{
+	text-transform:capitalize;
+}
+
+
+</style>
+<div>
+	<div class="rendering">
+		<div class="column">
+			<img  class="image" src="{{=URL('download',args=project.logo)}}" height="60px" width="60px">
+		</div>
+		<div class="column">
+			<span><h1 class="capi">{{=project.title}}</h1></span>
+		</div>
+		<div align="right">
+			<h4>Project Was Shared By</h4>
+			<span style="text-transform:capitalize;"> <h1> 
+					<a href="{{=URL("view_projects_by_author",args=project.created_by)}}">
+						{{=author(project.created_by)}}
+					</a>
+
+			</h1></span>
+		</div>
+		<div class="clear"></div>
+
+	</div>
+	<div class="rendering2">
+<div class="column1"><span><h3 class="cate" >
+					<a class="anu" href="{{=URL('view_projects_by_sub_categories',args=project.subcategory.title)}}" title="More About {{=project.subcategory.title}}">
+						{{=project.subcategory.title}}</a>
+		</h3></span></div>
+		<div class="column1"><span><h3 class="cate">
+					<a class="anu" href="{{=URL('view_projects_by_datetime',args=project.category.name)}}" title="More About {{=project.category.name}}">
+
+						{{=project.category.name}}</a></h3></span></div>
+		
+		<div class="column1"><span><h3 class="cate">
+					<a class="anu" href="#" title="Type of Project">
+
+						{{=project.permissions}}</a></h3></span></div>
+			
+	
+		<div class="clear"></div>
+	</div>
+
+	</div>
+	{{flag=0}}
+	{{if auth.user!=None:}}
+	{{for r in row:}}
+	{{if r.other_email==auth.user.first_name:}}
+	{{flag=1}}
+	{{pass}}
+	{{pass}}
+	{{pass}}
+	{{if auth.user!=None:}}
+	{{if flag==1:}}
+	<div align="right" class="edit-button">
+		<span>	<button  onclick="location.href='{{=URL('edit_project',args=project.id)}}';" class= "btn btn-danger" type="button"> Edit Project</button>
+		</span>
+
+		</div>
+	{{pass}}
+	{{pass}}
+	{{if auth.user!=None:}}
+	{{if auth.user.id==project.created_by:}}
+
+	<div align="right" class="edit-button">
+		<span>	<button  onclick="location.href='{{=URL('edit_project',args=project.id)}}';" class= "btn btn-danger" type="button"> Edit Project</button>
+	</span>	
+	<span>	<button  onclick="location.href='{{=URL('addcollo',args=project.id)}}';" class= "btn btn-danger" type="button"> Add Colloborator</button></span>
+
+		<span>	<button  onclick="location.href='{{=URL('delcollo',args=project.id)}}';" class= "btn btn-danger" type="button"> Delete Colloborators</button>
+	</span>	
+		</div>
+	{{pass}}
+	
+
+	{{pass}}
+	<div class="rating">
+		<div>
+			<div class="rendering1">
+				<div class="column">
+					<img src="{{=URL('static','images/star.png')}}" alt='' width="40px" height="50px">
+				</div>
+				<div class="column"><span>	
+						<h3>{{=project.rating}} Rating </h3>
+				</span></div>
+			</div>
+			<div class="clear"></div>
+			<div class="rendering1">
+				<div class="column">
+					<img src="{{=URL('static','images/download.png')}}" alt='' width="40px" height="40px">
+				</div>
+				<div class="column">
+					<h3>	<span class="resist">{{=project.downloads}}</span> Downloads
+				</h3>	</div>
+			</div>
+			<div class="clear"></div>
+			<div class="rendering1">
+				<div class="column">
+					<img src="{{=URL('static','images/calender.png')}}" alt='' width="40px" height="40px">
+				</div>
+				<div class="column"><span>	
+						<h3>Modified On {{=project.modified_on.date()}}</h3>
+				</span></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div>
+		<div class="column1" data-id="{{=project.id}}">
+		<button onclick="location.href='{{=URL('download',args=(project.files))}}';" class="btn btn-success btn-lg"  type="button" data-direction="up">Download Now</button>
+			<button  onclick="location.href='{{=URL('view_collo',args=project.id)}}';" class= "btn btn-success btn-lg" type="button"> View Collobarators</button>
+	</div>
+	{{if auth.user:}}
+	{{if ((project.created_by==auth.user.id) & (project.permissions=="private")):}}
+	<div class="column1" style="padding-right:5px;">
+		<button onclick="location.href='{{=URL('make_public',args=project.id)}}';" class="btn btn-success btn-lg" type="button"> Make Project Public</button>
+	</div>
+	{{pass}}
+	{{pass}}
+{{if auth.user:}}
+	{{if ((project.created_by==auth.user.id) & (project.permissions=="public")):}}
+	<div class="column1" style="padding-right:5px;">
+		<button onclick="location.href='{{=URL('make_public',args=project.id)}}';" class="btn btn-success btn-lg" type="button"> Make Project Private</button>
+	</div>
+	{{pass}}
+	{{pass}}
+
+</div>
+</div>
+
+<div class="screenshots">
+	<h2>Screen Shots:</h2>
+	<img  src="{{=URL('download',args=project.image)}}" height="300px" width="300px">
+</div>
+<div class="description">
+	<h2>Description:</h2>
+	<p><h4>{{=project.body}}</h4></p>
+</div>
+<div class="features">
+	<h2>Features:</h2>
+	<p><h4>{{=project.features}}</h4></p>
+</div>
+{{var=0}}
+<div align="right">
+	{{for review in reviews:}}
+	{{if auth.user!=None:}}
+	{{if review.created_by==auth.user.id:}}
+	{{rem=review.id}}
+	{{var=1}}
+	{{pass}}
+	{{pass}}
+	{{pass}}
+	{{if var==1:}}
+	<h3>{{=A('Edit Review>>',_class="colour",_href=URL('edit_review',args=(rem,project.id)))}}</h3>
+	{{else:}}
+	<h3>{{=A('Write A Review>>',_class="colour",_href=URL('write_a_review',args=project.id))}}</h3>
+	{{pass}}
+</div>
+<br/>
+<br/>
+<div>
+
+	<h2>Project Reviews:</h2>
+	<hr>
+	{{if len(reviews)==0:}}
+	<h4>No reviews till now</h4>
+	{{else:}}
+	{{for review in reviews:}}
+	<div>
+		<h3 class="case">{{=author(review.created_by)}}</h4>
+		<h4>{{=review.rating}} Rating</h5>
+		<h4 class="des">{{=review.body}}</h5>
+		<h5>Posted On {{=review.modified_on.date()}}</h5>
+		<hr/>
+	</div>
+	{{pass}}
+	{{pass}}
+</div>
+{{if len(reviews)>0:}}
+<div align="right">
+	<h3>{{=A('Read More Reviews>>',_class="colour",_href=URL('view_reviews',args=project.id))}}</h3>
+</div>
+{{pass}}
+</div>
+<script>
+	function do_ajax_vote(t,direction){
+		var id=jQuery(t).closest('div').attr('data-id');
+		jQuery.ajax({method:'post',url:'{{=URL('vote_callback')}}',
+				data:{'id':id,'direction':direction},
+				success:function(data){
+				jQuery('.resist').html(data);
+				}});
+	}
+ 	jQuery(function(){
+			jQuery('[data-direction=up').click(function(){do_ajax_vote(this,'up');});
+			});
+
+</script>
+
+
+
+

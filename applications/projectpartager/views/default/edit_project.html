@@ -1,0 +1,30 @@
+{{extend 'layout.html'}}
+<style>
+.rendering {
+	border-bottom-style:solid;
+}
+.column {
+	float:left;
+	padding-left:10pt;
+}
+
+.clear {
+	clear: both;   
+}
+</style>
+<div class="rendering">
+	<div class="column">	
+		<img  src="{{=URL('download',args=project.logo)}}" height="60px" width="60px">
+	</div >
+	<div class="column">
+		<h1>{{=project.title}}</h1>
+	</div>
+	<div class="clear"></div>
+</div>
+
+<div>
+	<h1> Edit Your Project:</h1>
+</div>
+
+
+{{=form}}

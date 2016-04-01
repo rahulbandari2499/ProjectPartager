@@ -1,0 +1,77 @@
+{{extend 'layout.html'}}
+<style>
+.rendering {
+	border-bottom-style:solid;
+}
+.column {
+	float:left;
+	padding-left:10pt;
+}
+
+.clear {
+	clear: both;   
+}
+.title{
+	text-transform:capitalize;
+	color:green;
+}
+.body{
+	color:blue;
+}
+.down{
+	border-bottom-style:solid;
+	
+
+}
+</style>
+
+<div>
+	<div class="rendering">
+		<div class="column">
+			<img  src="{{=URL('download',args=project.logo)}}" height="60px" width="60px">
+		</div>
+		<div class="column">
+			<span>	<h1>{{=project.title}}</h1></span>
+		</div>
+		<div class="clear"></div> 
+	</div>
+	<div>
+		<h3>User Ratings:</h3>
+		<br/>
+		<br/>
+		{{if len(reviews)>0:}}
+		{{for review in reviews:}}
+			<!posts by author>
+		<h3 class="title">{{=author(review.created_by)}}</h4>
+		<h4 >{{=review.rating}} Rating</h5>
+		<h4 class="body">{{=review.body}}</h5>
+		<h5>Posted On {{=review.modified_on}}</h5>
+		<div class="down"></div>
+		{{pass}}
+		{{else:}}
+		<h3>No Review By Users</h3>
+		{{pass}}
+		
+	</div>
+	{{if page>0:}}
+	<div  >
+		{{=A('Previous Page',_class='next',_href=URL(args=(id,page-1)))}}
+	</div>
+	{{pass}}
+	{{if len(reviews)>=6 and len(give)!=stop:}}
+	<div  align="right">
+		{{=A('Next Page',_class='next',_href=URL(args=(id,page+1)))}}
+		{{pass}}
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+

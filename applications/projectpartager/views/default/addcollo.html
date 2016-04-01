@@ -1,0 +1,20 @@
+{{extend 'layout.html'}}
+<div align="center" >
+	<div class="well"	>
+	<h1>
+		{{=project.title}}
+		</h1>
+	</div>
+	<br/>
+	<br/>
+	<h3>Project Admin:
+		<a href="{{=URL("view_projects_by_author",args=project.modified_by)}}"> {{=author(project.created_by).upper()}}</a>
+	</h3>
+	<br/>
+		<style type="text/css">
+h3,h2 { display: inline; }
+	</style>
+</div>
+</br>
+{{=form1}}
+

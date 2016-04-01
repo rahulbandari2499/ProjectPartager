@@ -1,0 +1,258 @@
+timestamp: 2016-04-03T23:21:39.272078
+CREATE TABLE auth_user(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name CHAR(128),
+    last_name CHAR(128),
+    email CHAR(512),
+    password CHAR(512),
+    registration_key CHAR(512),
+    reset_password_key CHAR(512),
+    registration_id CHAR(512)
+);
+success!
+timestamp: 2016-04-03T23:21:39.735182
+CREATE TABLE auth_group(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2016-04-03T23:21:39.979711
+CREATE TABLE auth_membership(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2016-04-03T23:21:40.243008
+CREATE TABLE auth_permission(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE  ,
+    name CHAR(512),
+    table_name CHAR(512),
+    record_id INTEGER
+);
+success!
+timestamp: 2016-04-03T23:21:40.493781
+CREATE TABLE auth_event(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    client_ip CHAR(512),
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    origin CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2016-04-03T23:21:40.627821
+CREATE TABLE auth_cas(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    created_on TIMESTAMP,
+    service CHAR(512),
+    ticket CHAR(512),
+    renew CHAR(1)
+);
+success!
+timestamp: 2016-04-05T10:04:40.386859
+CREATE TABLE category(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name CHAR(512)
+);
+success!
+timestamp: 2016-04-05T10:04:40.562109
+CREATE TABLE subcategory(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category INTEGER REFERENCES category (id) ON DELETE CASCADE  ,
+    title CHAR(512)
+);
+success!
+timestamp: 2016-04-05T10:06:59.235573
+CREATE TABLE post(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category INTEGER REFERENCES category (id) ON DELETE CASCADE  ,
+    subcategory INTEGER REFERENCES subcategory (id) ON DELETE CASCADE  ,
+    title CHAR(512) UNIQUE,
+    logo CHAR(512),
+    files CHAR(512),
+    features TEXT,
+    body TEXT,
+    likes INTEGER,
+    downloads INTEGER,
+    is_active CHAR(1),
+    created_on TIMESTAMP,
+    created_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    modified_on TIMESTAMP,
+    modified_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2016-04-05T10:06:59.380029
+CREATE TABLE review(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post INTEGER REFERENCES post (id) ON DELETE CASCADE  ,
+    comments TEXT,
+    is_active CHAR(1),
+    created_on TIMESTAMP,
+    created_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    modified_on TIMESTAMP,
+    modified_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2016-04-05T11:10:08.989792
+CREATE TABLE rater(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post INTEGER REFERENCES post (id) ON DELETE CASCADE  ,
+    rating INTEGER
+);
+success!
+timestamp: 2016-04-05T10:37:56.699412
+ALTER TABLE post ADD rating INTEGER;
+timestamp: 2016-04-05T10:37:56.885412
+ALTER TABLE post ADD commenter INTEGER;
+timestamp: 2016-04-05T10:37:57.074928
+ALTER TABLE post ADD no_of_raters INTEGER;
+success!
+timestamp: 2016-04-05T10:37:57.429671
+CREATE TABLE rating(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    post INTEGER REFERENCES post (id) ON DELETE CASCADE  ,
+    score INTEGER,
+    is_active CHAR(1),
+    created_on TIMESTAMP,
+    created_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    modified_on TIMESTAMP,
+    modified_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  
+);
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2016-04-08T03:30:13.603385
+CREATE TABLE project(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    category INTEGER REFERENCES category (id) ON DELETE CASCADE  ,
+    subcategory INTEGER REFERENCES subcategory (id) ON DELETE CASCADE  ,
+    title CHAR(512) UNIQUE,
+    logo CHAR(512),
+    image CHAR(512),
+    files CHAR(512),
+    features TEXT,
+    body TEXT,
+    rating INTEGER,
+    commenters INTEGER,
+    downloads INTEGER,
+    is_active CHAR(1),
+    created_on TIMESTAMP,
+    created_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    modified_on TIMESTAMP,
+    modified_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2016-04-08T03:31:45.011493
+CREATE TABLE comments(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project INTEGER REFERENCES project (id) ON DELETE CASCADE  ,
+    body TEXT,
+    is_active CHAR(1),
+    created_on TIMESTAMP,
+    created_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ,
+    modified_on TIMESTAMP,
+    modified_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  
+);
+success!
+timestamp: 2016-04-08T03:31:45.272039
+ALTER TABLE rater ADD modified_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ;
+timestamp: 2016-04-08T03:31:45.529284
+ALTER TABLE rater ADD is_active CHAR(1);
+timestamp: 2016-04-08T03:31:45.850509
+ALTER TABLE rater ADD created_by INTEGER REFERENCES auth_user (id) ON DELETE CASCADE  ;
+timestamp: 2016-04-08T03:31:46.051809
+ALTER TABLE rater ADD project INTEGER REFERENCES project (id) ON DELETE CASCADE  ;
+timestamp: 2016-04-08T03:31:46.174793
+ALTER TABLE rater ADD created_on TIMESTAMP;
+timestamp: 2016-04-08T03:31:46.322445
+ALTER TABLE rater ADD modified_on TIMESTAMP;
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+success!
+timestamp: 2016-04-10T16:47:54.863420
+ALTER TABLE comments ADD rating INTEGER;
+success!
+success!
+timestamp: 2016-04-12T21:45:03.075352
+ALTER TABLE auth_user ADD typist CHAR(512);
+success!
+success!
+timestamp: 2016-04-17T06:43:07.154387
+ALTER TABLE project ADD permissions CHAR(512);
+success!
+timestamp: 2016-04-28T03:27:09.606882
+CREATE TABLE allowed_users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    projectadmin_email CHAR(512),
+    other_email CHAR(512),
+    project_name CHAR(512)
+);
+success!
+timestamp: 2016-04-28T04:49:52.065708
+ALTER TABLE auth_user ADD score INTEGER;
+timestamp: 2016-04-28T04:49:52.167738
+ALTER TABLE auth_user ADD uploads INTEGER;
+success!

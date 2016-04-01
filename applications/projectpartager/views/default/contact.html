@@ -1,0 +1,101 @@
+{{extend 'layout.html'}}
+<style>
+#info{
+	font: 14px/21px "Cambria W01 Regular","Cambria","Times New Roman";
+        letter-spacing: 0.025em;
+	margin: 0 0 0 2em;
+}
+#contact{
+	margin-top:0em;
+	margin-right:10em;
+	margin-left:10em;
+	font-weight: bold;
+	color:  #2C3539;
+}
+#form {
+	display:block;
+	position:relative;
+	width:600px;
+	float:right;
+}
+.button{
+	background-color: #5FB0BC;
+	border: 0 none;
+	color: #FFFFFF;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        line-height: 1;
+	padding: 7px 10px 5px;
+}
+body{
+        background-image:url("{{=URL('static','images/contact.jpg')}}");
+        background-size:100% 100%;
+        background-repeat:none;
+}
+dd{
+	font-size:25px;
+	padding-left:30px;
+}
+dt{
+	font-size:20px;
+	font-style:italic;
+}
+</style>
+<br>
+<div id="contact">
+<fieldset>
+<legend>CONTACT US :</legend>
+<div id="form">
+<form action="submit.html" method="post">
+<br>
+<label for="name">NAME*</label><br>
+<input type="text" name="name" value=""><br><br>
+<label for="mail">EMAIL*</label><br>
+<input type="text" name="mail" value=""><br><br>
+<label for="telephone">TELEPHONE*</label><br>
+<input type="tel" name="telephone" value=""><br><br>
+<label for="subject">SUBJECT*</label><br>
+<input type="text" name="subject" value="" size="50"><br><br>
+<label for="message">MESSAGE*</label><br>
+<textarea name="message" rows="5" cols="60">How can we help you?</textarea><br>
+<input class="button" type="submit" value="SEND">
+<input class="button" type="reset" value="RESET">			
+</form>
+</div>
+
+<div id="info">
+<dl>
+<dt>Admins</dt>
+<dd>Rahul Bandari<br>Anudeep</dd>
+<br>
+<dt>Email</dt>
+<dd>
+rahul.bandari@students.iiit.ac.in<br>
+anudeep.pv@students.iiit.ac.in
+</dd>
+<br>
+<dt>Telephone</dt>
+<dd>
+<p title="Call us">040-26130681(rahul)<br>040-28304034(anudeep)</p>
+</dd>
+<br>
+<dt>Address</dt>
+<dd>
+<address>
+	D-124,D-216 OBH, 
+	<br>
+	IIIT-Hyderabad,
+	<br>
+	Gachibowli,
+	<br>
+	Hyderabad,
+	<br>
+	Andhra Pradesh
+	<br>
+	500032
+</address>
+</dd>
+</dl>
+</div>
+</fieldset>
+</div>

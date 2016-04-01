@@ -1,0 +1,126 @@
+# -*- coding: utf-8 -*-
+#auth table for developer and others
+#search bar(using keywords)
+#public,private projects
+#group accesses for many groups
+
+
+#this for the main categories..
+db.define_table('category',
+		Field('name',requires=(IS_SLUG(),IS_LOWER(),IS_NOT_IN_DB(db,'category.name'))))
+
+
+##this is for sub_category
+db.define_table('subcategory',
+		Field('category','reference category',requires=(IS_IN_DB(db,'category.id','%(name)s'))),
+		Field('title',requires=(IS_SLUG(),IS_LOWER(),IS_NOT_IN_DB(db,'subcategory.title'),IS_NOT_EMPTY()),label="Sub Category"),
+		)
+
+
+## this for app upload form
+db.define_table('project',
+		Field('title','string',unique=True),
+		Field('category','reference category',requires=(IS_IN_DB(db,'category.id','%(name)s (%(id)s)'))),
+		Field('subcategory','reference subcategory', requires=(IS_IN_DB(db,'subcategory.id','%(title)s' '(%(category)s)')),comment="Select the sub-category corresponding to the id above"),
+		Field('logo','upload',requires=IS_NOT_EMPTY()),
+		Field('image','upload',label='ScreenShot',requires=IS_NOT_EMPTY()),
+		Field('files','upload',comment="upload as a single zip file",requires=IS_NOT_EMPTY()),
+		Field('features',"text",requires=IS_NOT_EMPTY()),
+		Field('body',"text",requires=IS_NOT_EMPTY(),label='Description'),
+		#Field('rating','integer',writable=False,readable=False,default=0),
+		Field('rating','integer'),
+		#Field('no_of_raters','integer',writable=False,readable=False,default=0),
+		Field('commenters','integer',writable=False,readable=False,default=0),
+		Field('downloads','integer',writable=False,readable=False,default=0),
+		auth.signature)
+
+##comments database
+db.define_table('comments',
+		Field('project','reference project',readable=False,writable=False),
+		#Field('parent_comment','reference comment',readable=False,writable=False),
+		Field('rating','integer'),
+		Field('body','text',requires=IS_NOT_EMPTY(),label="Comment"),
+		auth.signature)
+
+##this a function returns the name of the project's author
+def author(id):
+	user=db.auth_user(id)
+	return ("%(first_name)s %(last_name)s" %user)
+
+class CascadingSelect(object):
+    def __init__(self, *tables):
+        self.tables = tables 
+        self.prompt = lambda table:str(table)   
+    def widget(self,f,v):
+        import uuid
+        uid = str(uuid.uuid4())[:8]
+        d_id = "cascade-" + uid
+        wrapper = TABLE(_id=d_id)
+        parent = None; parent_format = None; 
+        fn =  '' 
+        vr = 'var dd%s = [];var oi%s = [];\n' % (uid,uid)
+        prompt = [self.prompt(table) for table in self.tables]
+        vr += 'var pr%s = ["' % uid + '","'.join([str(p) for p in prompt]) + '"];\n' 
+        f_inp = SQLFORM.widgets.string.widget(f,v)
+        f_id = f_inp['_id']
+        f_inp['_type'] = "hidden"
+        for tc, table in enumerate(self.tables):             
+            db = table._db     
+            format = table._format            
+            options = db(table['id']>0).select()
+            id = str(table) + '_' + format[2:-2]             
+            opts = [OPTION(format % opt,_value=opt.id,
+                                 _parent=opt[str(parent)] if parent else '0') \
+                                  for opt in options]
+            opts.insert(0, OPTION(prompt[tc],_value=0))
+            inp = SELECT(opts ,_parent=str(parent) + \
+                                  "_" + str(parent_format),
+                                  _id=id,_name=id,
+                                  _disabled="disabled" if parent else None)
+            wrapper.append(TR(inp))
+            next = str(tc + 1)
+            vr += 'var p%s = jQuery("#%s #%s"); dd%s.push(p%s);\n' % (tc,d_id,id,uid,tc)            
+            vr += 'var i%s = jQuery("option",p%s).clone(); oi%s.push(i%s);\n' % (tc,tc,uid,tc)
+            fn_in = 'for (i=%s;i<%s;i+=1){dd%s[i].find("option").remove();'\
+                    'dd%s[i].append(\'<option value="0">\' + pr%s[i] + \'</option>\');'\
+                    'dd%s[i].attr("disabled","disabled");}\n' % \
+                           (next,len(self.tables),uid,uid,uid,uid)
+            fn_in +='oi%s[%s].each(function(i){'\
+                    'if (jQuery(this).attr("parent") == dd%s[%s].val()){'\
+                    'dd%s[%s].append(this);}});' % (uid,next,uid,tc,uid,next)            
+            fn_in += 'dd%s[%s].removeAttr("disabled");\n' % (uid,next)
+            fn_in += 'jQuery("#%s").val("");' % f_id
+            if (tc < len(self.tables)-1):
+                fn += 'dd%s[%s].change(function(){%s});\n' % (uid,tc,fn_in) 
+            else:
+                fn_in = 'jQuery("#%s").val(jQuery(this).val());' % f_id
+                fn += 'dd%s[%s].change(function(){%s});\n' % (uid,tc,fn_in)
+                if v:
+                    fn += 'dd%s[%s].val(%s);' % (uid,tc,v)                       
+            parent = table
+            parent_format = format[2:-2]
+
+        wrapper.append(f_inp)
+        wrapper.append(SCRIPT(vr,fn))
+        return wrapper
+    
+cascade = CascadingSelect(db.category,db.subcategory)
+db.category.subcategory.widget = cascade.widget
+#db.comments.rating.requires=IS_IN_SET(range(1,6))
+
+##rating database
+#db.define_table('rating',
+#		Field('post','reference post',readable=False,writable=False),
+#		Field('score','integer',default=0),
+#		auth.signature)
+
+#db.define_table('rater',
+#		Field('project','reference project',readable=False,writable=False),
+ #       	Field('rating','integer'),
+#		auth.signature)
+
+#db.comments.rating.requires=IS_IN_SET(range(1,6))
+
+
+##password change
+db.auth_user.password.requires=IS_STRONG(min=8,special=1,upper=1)

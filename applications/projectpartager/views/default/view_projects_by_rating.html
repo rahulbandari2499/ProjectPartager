@@ -1,0 +1,207 @@
+{{extend 'layout.html'}}
+<style>
+.cate{
+	border-radius: 10px;
+	border: 2px solid #73AD21;
+	width: 230px;
+	height: 35px;
+	text-align:center;
+	color:white;
+	background-color:green;
+
+}
+.anu{
+	color:white;
+	text-decoration:none;
+}
+.anu:hover
+{
+	color:white;
+	text-decoration:none;
+}
+
+.column {
+	float:left;
+	padding-left:10pt;
+}
+.column1{
+	float:right;
+}
+.table_class
+{
+	width:100%;
+}
+.image_class
+{
+	padding-left:20px;
+	height:250px;
+	width:250px;
+	padding-right:0px;
+	margin-right:0px;
+}
+.class_title
+{
+	padding-left:20px;
+	font-size:16px;
+	margin-left:10px;
+}
+.title_name{
+	text-transform:capitalize;
+	color:red;
+	font-size:25px;
+}
+.capi{
+	text-transform:capitalize;
+}
+.clear{
+	clear:both
+}
+
+.dropbtn {
+	background-color: #4CAF50;
+	color: white;
+	padding: 16px;
+	font-size: 16px;
+	border: none;
+	cursor: pointer;
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a { 
+	color: black;
+	padding: 12px 16px;
+	text-decoration: none;
+	display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.dropdown:hover .dropbtn {
+	background-color: #3e8e41;
+}
+</style>
+<div class="well"  align="center">
+	<h1>Projects Under Category "{{=category.name.upper()}}"</h1>
+</div>
+<div class="dropdown" style="float:right;">
+	<button class="dropbtn" >Sort By</button>
+	<div class="dropdown-content">
+		<a href="{{=URL('view_projects_by_downloads',args=category.name)}}" >Downloads</a>
+		<a href="{{=URL('view_projects_by_datetime',args=category.name)}}" >Upload time </a>
+		<a href="{{=URL('view_projects_by_most_comments',args=category.name)}}" >Most Commented </a>
+	</div>
+</div>
+<div>
+	<h2> Viewing Posts By Most Rated</h2>
+</div>
+{{for row in projects:}}
+{{no_of_commenters=db(db.comments.project==row.id).count()}}
+{{reviews_rating=db(db.comments.project==row.id).select()}}
+{{score=0}}
+{{for review in reviews_rating:}}
+{{score=score+review.rating}}
+{{pass}}
+{{score1=0}}
+{{score=float(score)}}
+{{if no_of_commenters !=0:}}
+{{no_of_commenters=float(no_of_commenters)}}
+{{score1=float(score/no_of_commenters)}}
+{{db(db.project.id==row.id).update(rating=score1)}}
+{{db(db.project.id==row.id).update(commenters=no_of_commenters)}}
+{{pass}}
+<div class="table_class">
+	<table class="table" >
+		<tr style="height:90px;width:100%;">
+			<td colspan="2">
+				<div class="rendering">
+					<div class="column">
+						<a href="{{=URL('view_project',args=row.id)}}" title="More About {{=row.title}}">
+							<img  src="{{=URL('download',args=row.logo)}}" height="60px" width="60px">
+						</a>
+					</div>
+					<div class="column">
+						<span>  <h1 class="capi">
+								<a href="{{=URL('view_project',args=[row.id])}}" title="More About {{=row.title}}">
+									{{=row.title}}
+								</a>
+						</h1></span>
+					</div>
+					<div class="column1"><span><h3 class="cate" >                                                   <a class="anu" href="{{=URL('view_projects_by_sub_categories',args=row.subcategory.title)}}" title="More About {{=row.subcategory.title}}">
+									{{=row.subcategory.title}}</a>
+					</h3></span></div>
+					<div class="column1"><span><h3 class="cate">
+								<a class="anu" href="#" title="Type Of Project">                          
+									{{=row.permissions}}</a></h3></span></div>
+
+				</div>
+			</td>
+		</tr>
+		<tr style="height:150px;width:100%;">
+			<td>
+				<img class="image_class" src="{{=URL('download',args=row.image)}}" alt="Screen Shot" />
+			</td>
+			<td class="class_title" style="width:100%;">
+				{{info=(row.body[:400] + '...') if len(row.body) > 400 else row.body}}
+				<h3>{{=info}}
+					<a href="{{=URL('default','view_project',args=row.id)}}" title="More About {{=row.title}}">
+						<span style="color:OrangeRed;">
+							See More</span></a></h3>
+				<br/>
+				<!view_by_author>
+				<strong>Project was Shared By </strong> <span class="title_name">
+					<a href="{{=URL("view_projects_by_author",args=row.created_by)}}"> {{=author(row.created_by).upper()}}</a>
+
+				</span><br>
+				<strong>Last Updated On:</strong>{{=row.modified_on.date()}}
+				<div class="rendering">
+					<div class="column"><h3><strong>{{=row.rating}} Rating</strong></h3></div>
+					<div class="column1" ><span >  
+							<button onclick="location.href='{{=URL('download1',args=(row.id,row.files))}}';" class="btn btn-success btn-lg" type="button"> Download Now</button>
+						</span>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+{{pass}}
+
+{{ if not total > 0: }}
+<div align=center>No Projects</div>
+{{else:}}
+<div id="items-container">
+	<div id="items-nav">
+		<h3>Showing {{=start}} to {{=(stop)}} of {{=total}} Projects</h3>
+	</h3>
+	<div><br>
+		{{ if prev != None: }}
+
+		<span>{{=A('Previous Page',_class='next',_href=URL(args=(page-1)))}}
+		</span>
+		{{ pass }}
+	</div>
+	<div align=right>
+		{{ if next != None: }}
+		<span>  {{=A('Next Page',_class='next',_href=URL(args=(page+1)))}}
+		</span>
+		{{ pass }}
+	</div>
+</div>
+</div>				
+{{pass}}
+

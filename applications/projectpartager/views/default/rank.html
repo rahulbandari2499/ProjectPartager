@@ -1,0 +1,39 @@
+{{extend 'layout.html'}}
+<style>
+body{
+	background-image:url("{{=URL('static','images/normal.png')}}")
+}
+th{
+	text-align:center;
+	font-style:italic;
+	font-size:30px;
+}
+td{
+	text-align:center;
+	height:50px;
+	font-size:30px;
+}
+tr:nth-child(even){background-color: #f2f2f2}
+</style>
+<table width="100%">
+<tr>
+<th>Rank</th>
+<th>Name of user</th>
+<th>No.of projects</th>
+<th>Score</th>
+<th>Group</th>
+</tr>
+{{i=1}}
+{{for user in sort:}}
+<tr>
+<td>{{=i}}</td>
+<td>
+	<a href="{{=URL("view_projects_by_author",args=user.id)}}"> {{=author(user.id).upper()}}</a>
+</td>
+<td>{{=user.uploads}}</td>
+<td>{{=user.score}}</td>
+<td>{{=user.typist.title()}}</td>
+</tr>
+{{i=i+1}}
+{{pass}}
+</table>

@@ -1,0 +1,46 @@
+{{extend 'layout.html'}}
+<style>
+.backproject{
+	padding-bottom:10px;
+	margin-bottom:10px;
+	border-bottom-style:solid;
+	border-bottom-width:2px;
+	border-bottom-color:green;
+}
+.form{
+	margin-top:75px;
+}
+</style>
+<div>
+	<div class="backproject" align="right">
+		<h3>{{=A("<<Back To Project",_href=URL('view_project',args=id))}}</h3>
+	</div>
+
+	<div >
+		<h1>Write a Review</h1>
+		<!put a smiley here>
+		<h3>What Do You Think About {{=project.title}}?</h3>
+
+		<div class="form" >
+			{{=form}}
+		</div>
+	</div>
+</div>
+<script>
+jQuery('input.rating,input[name*="rating"]').each(function(){	
+		var span = jQuery('<span style="white-space:nowrap"><span class="rate0">&#x25CE;</span><span class="rate1">&#x2606;</span><span class="rate2">&#x2606;</span><span class="rate3">&#x2606;</span><span class="rate4">&#x2606;</span><span class="rate5">&#x2606;</span></span>');
+		var self = jQuery(this).hide().after(span);
+		var fill_stars = function() {
+		var k = parseInt(self.val()) || 0;
+		for(var i=1; i<6; i++) span.find('.rate'+i).html((i<=k)?'&#x2605;':'&#x2606;');
+		};
+		for(var k=0; k<6; k++) (function(k){
+			span.find('.rate'+k).mouseover(function(){
+				for(var i=1; i<6; i++) span.find('.rate'+i).html((i<=k)?'&#x2605;':'&#x2606;');
+				}).click(function(){self.val(k);fill_stars();});
+			})(k);
+		span.mouseout(fill_stars);
+		fill_stars();
+		});
+</script>
+

@@ -1,0 +1,34 @@
+{{extend 'layout.html'}}
+<div align="center" >
+	<div class="well">
+		<h1>
+			{{=project.title}}
+		</h1>
+	</div>
+	<br/>
+	<br/>
+	<h3>Project Admin:
+		<a href="{{=URL("view_projects_by_author",args=project.modified_by)}}"> {{=author(project.created_by).upper()}}</a>
+	</h3>
+	<br/>
+		<style type="text/css">
+h3,h2 { display: inline; }
+	</style>
+	{{if len(row)!=0:}}
+	<h3>Other Collaborators</h3>
+	{{for some in row:}}
+	<h3>{{=LI(A(some.other_email, _href=URL("#")))}}
+	</h3>
+		{{pass}}
+	{{else:}}
+	<blink><h2>Sorry, you have no collaborators!</h2></blink>
+	<br/>
+
+	<button  onclick="document.location='{{=URL(r=request,f='addcollo',args=project.id)}}';">Add Collaborators</button>
+	{{pass}}
+
+
+
+</div>
+</br>
+
